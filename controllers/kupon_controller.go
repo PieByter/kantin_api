@@ -19,9 +19,9 @@ func CreateKupon(c *gin.Context) {
 	}
 	now := time.Now()
 	res, err := config.DB.Exec(
-		`INSERT INTO kupon (pembelian_kupon_id, user_id, jenis, kode, tipe_kupon, nilai_diskon, harga_pembelian, status, is_used, tanggal_berlaku, order_kupon_items_id, created_at, updated_at) 
+		`INSERT INTO kupon (pembelian_kupon_id, user_id, jenis, kode, tipe_kupon, nilai_diskon, harga_pembelian, status, is_used, tanggal_berlaku, created_at, updated_at) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		req.PembelianKuponID, req.UserID, req.Jenis, req.Kode, req.TipeKupon, req.NilaiDiskon, req.HargaPembelian, req.Status, req.IsUsed, req.TanggalBerlaku, req.OrderKuponItemsID, now, now,
+		req.PembelianKuponID, req.UserID, req.Jenis, req.Kode, req.TipeKupon, req.NilaiDiskon, req.HargaPembelian, req.Status, req.IsUsed, req.TanggalBerlaku, now, now,
 	)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
@@ -37,7 +37,7 @@ func CreateKupon(c *gin.Context) {
 // Get all Kupon
 func GetKupons(c *gin.Context) {
 	rows, err := config.DB.Query(
-		`SELECT id, pembelian_kupon_id, user_id, jenis, kode, tipe_kupon, nilai_diskon, harga_pembelian, status, is_used, tanggal_berlaku, order_kupon_items_id, created_at, updated_at FROM kupon`)
+		`SELECT id, pembelian_kupon_id, user_id, jenis, kode, tipe_kupon, nilai_diskon, harga_pembelian, status, is_used, tanggal_berlaku,  created_at, updated_at FROM kupon`)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
 		return
@@ -47,7 +47,7 @@ func GetKupons(c *gin.Context) {
 	for rows.Next() {
 		var k models.Kupon
 		err := rows.Scan(
-			&k.ID, &k.PembelianKuponID, &k.UserID, &k.Jenis, &k.Kode, &k.TipeKupon, &k.NilaiDiskon, &k.HargaPembelian, &k.Status, &k.IsUsed, &k.TanggalBerlaku, &k.OrderKuponItemsID, &k.CreatedAt, &k.UpdatedAt,
+			&k.ID, &k.PembelianKuponID, &k.UserID, &k.Jenis, &k.Kode, &k.TipeKupon, &k.NilaiDiskon, &k.HargaPembelian, &k.Status, &k.IsUsed, &k.TanggalBerlaku, &k.CreatedAt, &k.UpdatedAt,
 		)
 		if err == nil {
 			kupons = append(kupons, k)
@@ -61,8 +61,8 @@ func GetKuponByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var k models.Kupon
 	err := config.DB.QueryRow(
-		`SELECT id, pembelian_kupon_id, user_id, jenis, kode, tipe_kupon, nilai_diskon, harga_pembelian, status, is_used, tanggal_berlaku, order_kupon_items_id, created_at, updated_at FROM kupon WHERE id = ?`, id).
-		Scan(&k.ID, &k.PembelianKuponID, &k.UserID, &k.Jenis, &k.Kode, &k.TipeKupon, &k.NilaiDiskon, &k.HargaPembelian, &k.Status, &k.IsUsed, &k.TanggalBerlaku, &k.OrderKuponItemsID, &k.CreatedAt, &k.UpdatedAt)
+		`SELECT id, pembelian_kupon_id, user_id, jenis, kode, tipe_kupon, nilai_diskon, harga_pembelian, status, is_used, tanggal_berlaku,created_at, updated_at FROM kupon WHERE id = ?`, id).
+		Scan(&k.ID, &k.PembelianKuponID, &k.UserID, &k.Jenis, &k.Kode, &k.TipeKupon, &k.NilaiDiskon, &k.HargaPembelian, &k.Status, &k.IsUsed, &k.TanggalBerlaku, &k.CreatedAt, &k.UpdatedAt)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Kupon not found"})
 		return
@@ -80,8 +80,8 @@ func UpdateKupon(c *gin.Context) {
 	}
 	now := time.Now()
 	_, err := config.DB.Exec(
-		`UPDATE kupon SET pembelian_kupon_id=?, user_id=?, jenis=?, kode=?, tipe_kupon=?, nilai_diskon=?, harga_pembelian=?, status=?, is_used=?, tanggal_berlaku=?, order_kupon_items_id=?, updated_at=? WHERE id=?`,
-		req.PembelianKuponID, req.UserID, req.Jenis, req.Kode, req.TipeKupon, req.NilaiDiskon, req.HargaPembelian, req.Status, req.IsUsed, req.TanggalBerlaku, req.OrderKuponItemsID, now, id,
+		`UPDATE kupon SET pembelian_kupon_id=?, user_id=?, jenis=?, kode=?, tipe_kupon=?, nilai_diskon=?, harga_pembelian=?, status=?, is_used=?, tanggal_berlaku=?, updated_at=? WHERE id=?`,
+		req.PembelianKuponID, req.UserID, req.Jenis, req.Kode, req.TipeKupon, req.NilaiDiskon, req.HargaPembelian, req.Status, req.IsUsed, req.TanggalBerlaku, now, id,
 	)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
@@ -104,7 +104,7 @@ func DeleteKupon(c *gin.Context) {
 func GetKuponsByStatus(c *gin.Context) {
 	status := c.Param("status")
 	rows, err := config.DB.Query(
-		`SELECT id, pembelian_kupon_id, user_id, jenis, kode, tipe_kupon, nilai_diskon, harga_pembelian, status, is_used, tanggal_berlaku, order_kupon_items_id, created_at, updated_at FROM kupon WHERE status = ?`, status)
+		`SELECT id, pembelian_kupon_id, user_id, jenis, kode, tipe_kupon, nilai_diskon, harga_pembelian, status, is_used, tanggal_berlaku, created_at, updated_at FROM kupon WHERE status = ?`, status)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
 		return
@@ -114,7 +114,7 @@ func GetKuponsByStatus(c *gin.Context) {
 	for rows.Next() {
 		var k models.Kupon
 		err := rows.Scan(
-			&k.ID, &k.PembelianKuponID, &k.UserID, &k.Jenis, &k.Kode, &k.TipeKupon, &k.NilaiDiskon, &k.HargaPembelian, &k.Status, &k.IsUsed, &k.TanggalBerlaku, &k.OrderKuponItemsID, &k.CreatedAt, &k.UpdatedAt,
+			&k.ID, &k.PembelianKuponID, &k.UserID, &k.Jenis, &k.Kode, &k.TipeKupon, &k.NilaiDiskon, &k.HargaPembelian, &k.Status, &k.IsUsed, &k.TanggalBerlaku, &k.CreatedAt, &k.UpdatedAt,
 		)
 		if err == nil {
 			kupons = append(kupons, k)

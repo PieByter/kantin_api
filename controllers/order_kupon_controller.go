@@ -112,9 +112,9 @@ func CreateOrderKuponItem(c *gin.Context) {
 	}
 	now := time.Now()
 	res, err := config.DB.Exec(
-		`INSERT INTO order_kupon_items (order_kupon_id, makanan_id, qty, kupon_terpakai, tambahan_bayar, status, tanggal_konsumsi, cancelled_at, used_at, created_at, updated_at) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		req.OrderKuponID, req.MakananID, req.Qty, req.KuponTerpakai, req.TambahanBayar, req.Status, req.TanggalKonsumsi, req.CancelledAt, req.UsedAt, now, now,
+		`INSERT INTO order_kupon_items (order_kupon_id, kupon_id, makanan_id, qty, kupon_terpakai, tambahan_bayar, status, tanggal_konsumsi, cancelled_at, used_at, created_at, updated_at) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		req.OrderKuponID, req.KuponID, req.MakananID, req.Qty, req.KuponTerpakai, req.TambahanBayar, req.Status, req.TanggalKonsumsi, req.CancelledAt, req.UsedAt, now, now,
 	)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
@@ -130,7 +130,7 @@ func CreateOrderKuponItem(c *gin.Context) {
 // Get all OrderKuponItems
 func GetOrderKuponItems(c *gin.Context) {
 	rows, err := config.DB.Query(
-		`SELECT id, order_kupon_id, makanan_id, qty, kupon_terpakai, tambahan_bayar, status, tanggal_konsumsi, cancelled_at, used_at, created_at, updated_at FROM order_kupon_items`)
+		`SELECT id, order_kupon_id, kupon_id, makanan_id, qty, kupon_terpakai, tambahan_bayar, status, tanggal_konsumsi, cancelled_at, used_at, created_at, updated_at FROM order_kupon_items`)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
 		return
@@ -140,7 +140,7 @@ func GetOrderKuponItems(c *gin.Context) {
 	for rows.Next() {
 		var i models.OrderKuponItem
 		err := rows.Scan(
-			&i.ID, &i.OrderKuponID, &i.MakananID, &i.Qty, &i.KuponTerpakai, &i.TambahanBayar, &i.Status, &i.TanggalKonsumsi, &i.CancelledAt, &i.UsedAt, &i.CreatedAt, &i.UpdatedAt,
+			&i.ID, &i.OrderKuponID, &i.KuponID, &i.MakananID, &i.Qty, &i.KuponTerpakai, &i.TambahanBayar, &i.Status, &i.TanggalKonsumsi, &i.CancelledAt, &i.UsedAt, &i.CreatedAt, &i.UpdatedAt,
 		)
 		if err == nil {
 			items = append(items, i)
@@ -154,8 +154,8 @@ func GetOrderKuponItemByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var i models.OrderKuponItem
 	err := config.DB.QueryRow(
-		`SELECT id, order_kupon_id, makanan_id, qty, kupon_terpakai, tambahan_bayar, status, tanggal_konsumsi, cancelled_at, used_at, created_at, updated_at FROM order_kupon_items WHERE id = ?`, id).
-		Scan(&i.ID, &i.OrderKuponID, &i.MakananID, &i.Qty, &i.KuponTerpakai, &i.TambahanBayar, &i.Status, &i.TanggalKonsumsi, &i.CancelledAt, &i.UsedAt, &i.CreatedAt, &i.UpdatedAt)
+		`SELECT id, order_kupon_id, kupon_id, makanan_id, qty, kupon_terpakai, tambahan_bayar, status, tanggal_konsumsi, cancelled_at, used_at, created_at, updated_at FROM order_kupon_items WHERE id = ?`, id).
+		Scan(&i.ID, &i.OrderKuponID, &i.KuponID, &i.MakananID, &i.Qty, &i.KuponTerpakai, &i.TambahanBayar, &i.Status, &i.TanggalKonsumsi, &i.CancelledAt, &i.UsedAt, &i.CreatedAt, &i.UpdatedAt)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "OrderKuponItem not found"})
 		return
@@ -173,8 +173,8 @@ func UpdateOrderKuponItem(c *gin.Context) {
 	}
 	now := time.Now()
 	_, err := config.DB.Exec(
-		`UPDATE order_kupon_items SET order_kupon_id=?, makanan_id=?, qty=?, kupon_terpakai=?, tambahan_bayar=?, status=?, tanggal_konsumsi=?, cancelled_at=?, used_at=?, updated_at=? WHERE id=?`,
-		req.OrderKuponID, req.MakananID, req.Qty, req.KuponTerpakai, req.TambahanBayar, req.Status, req.TanggalKonsumsi, req.CancelledAt, req.UsedAt, now, id,
+		`UPDATE order_kupon_items SET order_kupon_id=?, kupon_id=?, makanan_id=?, qty=?, kupon_terpakai=?, tambahan_bayar=?, status=?, tanggal_konsumsi=?, cancelled_at=?, used_at=?, updated_at=? WHERE id=?`,
+		req.OrderKuponID, req.KuponID, req.MakananID, req.Qty, req.KuponTerpakai, req.TambahanBayar, req.Status, req.TanggalKonsumsi, req.CancelledAt, req.UsedAt, now, id,
 	)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
