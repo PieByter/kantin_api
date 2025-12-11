@@ -13,7 +13,6 @@ type Makanan struct {
 	Status        string    `json:"status"`
 	IsAvailable   bool      `json:"is_available"`
 	TipeMenu      string    `json:"tipe_menu"`
-	IsCouponUse   bool      `json:"is_coupon_use"`
 	TambahanBayar int       `json:"tambahan_bayar"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`

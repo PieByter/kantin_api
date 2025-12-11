@@ -100,3 +100,25 @@ func DeleteKupon(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Kupon deleted"})
 }
+
+func GetKuponsByStatus(c *gin.Context) {
+	status := c.Param("status")
+	rows, err := config.DB.Query(
+		`SELECT id, pembelian_kupon_id, user_id, jenis, kode, tipe_kupon, nilai_diskon, harga_pembelian, status, is_used, tanggal_berlaku, order_kupon_items_id, created_at, updated_at FROM kupon WHERE status = ?`, status)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+		return
+	}
+	defer rows.Close()
+	var kupons []models.Kupon
+	for rows.Next() {
+		var k models.Kupon
+		err := rows.Scan(
+			&k.ID, &k.PembelianKuponID, &k.UserID, &k.Jenis, &k.Kode, &k.TipeKupon, &k.NilaiDiskon, &k.HargaPembelian, &k.Status, &k.IsUsed, &k.TanggalBerlaku, &k.OrderKuponItemsID, &k.CreatedAt, &k.UpdatedAt,
+		)
+		if err == nil {
+			kupons = append(kupons, k)
+		}
+	}
+	c.JSON(http.StatusOK, kupons)
+}

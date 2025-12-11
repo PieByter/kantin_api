@@ -19,9 +19,9 @@ func CreateMakanan(c *gin.Context) {
 	}
 	now := time.Now()
 	res, err := config.DB.Exec(
-		`INSERT INTO makanan (kode, nama, deskripsi, harga, stok, gambar_makanan, is_available, tipe_menu, is_coupon_use, tambahan_bayar, created_at, updated_at) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		req.Kode, req.Nama, req.Deskripsi, req.Harga, req.Stok, req.GambarMakanan, req.IsAvailable, req.TipeMenu, req.IsCouponUse, req.TambahanBayar, now, now,
+		`INSERT INTO makanan (kode, nama, deskripsi, harga, stok, gambar_makanan, is_available, tipe_menu, tambahan_bayar, created_at, updated_at) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		req.Kode, req.Nama, req.Deskripsi, req.Harga, req.Stok, req.GambarMakanan, req.IsAvailable, req.TipeMenu, req.TambahanBayar, now, now,
 	)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
@@ -37,7 +37,7 @@ func CreateMakanan(c *gin.Context) {
 // Get all Makanan
 func GetMakanans(c *gin.Context) {
 	rows, err := config.DB.Query(
-		`SELECT id, kode, nama, deskripsi, harga, stok, gambar_makanan, is_available, tipe_menu, is_coupon_use, tambahan_bayar, created_at, updated_at FROM makanan`)
+		`SELECT id, kode, nama, deskripsi, harga, stok, gambar_makanan, is_available, tipe_menu,  tambahan_bayar, created_at, updated_at FROM makanan`)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
 		return
@@ -47,7 +47,7 @@ func GetMakanans(c *gin.Context) {
 	for rows.Next() {
 		var m models.Makanan
 		err := rows.Scan(
-			&m.ID, &m.Kode, &m.Nama, &m.Deskripsi, &m.Harga, &m.Stok, &m.GambarMakanan, &m.IsAvailable, &m.TipeMenu, &m.IsCouponUse, &m.TambahanBayar, &m.CreatedAt, &m.UpdatedAt,
+			&m.ID, &m.Kode, &m.Nama, &m.Deskripsi, &m.Harga, &m.Stok, &m.GambarMakanan, &m.IsAvailable, &m.TipeMenu, &m.TambahanBayar, &m.CreatedAt, &m.UpdatedAt,
 		)
 		if err == nil {
 			makanans = append(makanans, m)
@@ -61,8 +61,8 @@ func GetMakananByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var m models.Makanan
 	err := config.DB.QueryRow(
-		`SELECT id, kode, nama, deskripsi, harga, stok, gambar_makanan, is_available, tipe_menu, is_coupon_use, tambahan_bayar, created_at, updated_at FROM makanan WHERE id = ?`, id).
-		Scan(&m.ID, &m.Kode, &m.Nama, &m.Deskripsi, &m.Harga, &m.Stok, &m.GambarMakanan, &m.IsAvailable, &m.TipeMenu, &m.IsCouponUse, &m.TambahanBayar, &m.CreatedAt, &m.UpdatedAt)
+		`SELECT id, kode, nama, deskripsi, harga, stok, gambar_makanan, is_available, tipe_menu, tambahan_bayar, created_at, updated_at FROM makanan WHERE id = ?`, id).
+		Scan(&m.ID, &m.Kode, &m.Nama, &m.Deskripsi, &m.Harga, &m.Stok, &m.GambarMakanan, &m.IsAvailable, &m.TipeMenu, &m.TambahanBayar, &m.CreatedAt, &m.UpdatedAt)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Makanan not found"})
 		return
@@ -80,8 +80,8 @@ func UpdateMakanan(c *gin.Context) {
 	}
 	now := time.Now()
 	_, err := config.DB.Exec(
-		`UPDATE makanan SET kode=?, nama=?, deskripsi=?, harga=?, stok=?, gambar_makanan=?, is_available=?, tipe_menu=?, is_coupon_use=?, tambahan_bayar=?, updated_at=? WHERE id=?`,
-		req.Kode, req.Nama, req.Deskripsi, req.Harga, req.Stok, req.GambarMakanan, req.IsAvailable, req.TipeMenu, req.IsCouponUse, req.TambahanBayar, now, id,
+		`UPDATE makanan SET kode=?, nama=?, deskripsi=?, harga=?, stok=?, gambar_makanan=?, is_available=?, tipe_menu=?, tambahan_bayar=?, updated_at=? WHERE id=?`,
+		req.Kode, req.Nama, req.Deskripsi, req.Harga, req.Stok, req.GambarMakanan, req.IsAvailable, req.TipeMenu, req.TambahanBayar, now, id,
 	)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})

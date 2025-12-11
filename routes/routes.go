@@ -50,6 +50,7 @@ func SetupRoutes(r *gin.Engine) {
 	r.GET("/kupons/:id", controllers.GetKuponByID)
 	r.PUT("/kupons/:id", controllers.UpdateKupon)
 	r.DELETE("/kupons/:id", controllers.DeleteKupon)
+	r.GET("/kupons/status/:status", controllers.GetKuponsByStatus)
 
 	r.GET("/order_kupon_items", controllers.GetOrderKuponItems)
 	r.POST("/order_kupon_items", controllers.CreateOrderKuponItem)

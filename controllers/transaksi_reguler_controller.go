@@ -111,7 +111,7 @@ func CreateTransaksiRegulerDetail(c *gin.Context) {
 	}
 	now := time.Now()
 	res, err := config.DB.Exec(
-		`INSERT INTO transaksi_reguler_detail (transaksi_id, makanan_id, jumlah, harga_satuan, diskon_kupon, subtotal, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+		`INSERT INTO transaksi_reguler_detail (transaksi_reguler_id, makanan_id, jumlah, harga_satuan, diskon_kupon, subtotal, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
 		req.TransaksiID, req.MakananID, req.Jumlah, req.HargaSatuan, req.DiskonKupon, req.Subtotal, now, now,
 	)
 	if err != nil {
@@ -128,7 +128,7 @@ func CreateTransaksiRegulerDetail(c *gin.Context) {
 // Get all TransaksiRegulerDetail
 func GetTransaksiRegulerDetails(c *gin.Context) {
 	rows, err := config.DB.Query(
-		`SELECT id, transaksi_id, makanan_id, jumlah, harga_satuan, diskon_kupon, subtotal, created_at, updated_at FROM transaksi_reguler_detail`)
+		`SELECT id, transaksi_reguler_id, makanan_id, jumlah, harga_satuan, diskon_kupon, subtotal, created_at, updated_at FROM transaksi_reguler_detail`)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
 		return
@@ -152,7 +152,7 @@ func GetTransaksiRegulerDetailByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var d models.TransaksiRegulerDetail
 	err := config.DB.QueryRow(
-		`SELECT id, transaksi_id, makanan_id, jumlah, harga_satuan, diskon_kupon, subtotal, created_at, updated_at FROM transaksi_reguler_detail WHERE id = ?`, id).
+		`SELECT id, transaksi_reguler_id, makanan_id, jumlah, harga_satuan, diskon_kupon, subtotal, created_at, updated_at FROM transaksi_reguler_detail WHERE id = ?`, id).
 		Scan(&d.ID, &d.TransaksiID, &d.MakananID, &d.Jumlah, &d.HargaSatuan, &d.DiskonKupon, &d.Subtotal, &d.CreatedAt, &d.UpdatedAt)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "TransaksiRegulerDetail not found"})
@@ -171,7 +171,7 @@ func UpdateTransaksiRegulerDetail(c *gin.Context) {
 	}
 	now := time.Now()
 	_, err := config.DB.Exec(
-		`UPDATE transaksi_reguler_detail SET transaksi_id=?, makanan_id=?, jumlah=?, harga_satuan=?, diskon_kupon=?, subtotal=?, updated_at=? WHERE id=?`,
+		`UPDATE transaksi_reguler_detail SET transaksi_reguler_id=?, makanan_id=?, jumlah=?, harga_satuan=?, diskon_kupon=?, subtotal=?, updated_at=? WHERE id=?`,
 		req.TransaksiID, req.MakananID, req.Jumlah, req.HargaSatuan, req.DiskonKupon, req.Subtotal, now, id,
 	)
 	if err != nil {
