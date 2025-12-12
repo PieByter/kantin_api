@@ -10,8 +10,11 @@ var DB *sql.DB
 
 func ConnectDB() {
 	var err error
-	DB, err = sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/kantin")
+	DB, err = sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/kantin?parseTime=true")
 	if err != nil {
+		panic(err)
+	}
+	if err = DB.Ping(); err != nil {
 		panic(err)
 	}
 }

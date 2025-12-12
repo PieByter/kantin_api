@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"kantin_api/config"
 	"kantin_api/models"
 	"net/http"
@@ -12,7 +13,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var jwtSecret = []byte("your_secret_key")
+var jwtSecret = []byte("password")
 
 func GenerateJWT(userID int, role string) (string, error) {
 	claims := jwt.MapClaims{
@@ -88,12 +89,13 @@ func Login(c *gin.Context) {
 		&user.ID, &user.Nama, &user.NIK, &user.Email, &user.Password, &user.NomorTelepon, &user.Alamat, &user.GambarProfil, &user.TanggalLahir, &user.TanggalBergabung, &user.JabatanID, &user.BagianID, &user.PenempatanID, &user.Keterangan, &user.Role, &user.JumlahKuponTersedia, &user.JumlahKuponTerpakai, &user.JumlahKuponDibatalkan, &user.CreatedAt, &user.UpdatedAt,
 	)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "NIK/Email or password incorrect"})
+		fmt.Println("Query error:", err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Kosong"})
 		return
 	}
 	// Verifikasi password hash
 	if bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)) != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "NIK/Email or password incorrect"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}
 	jwtToken, err := GenerateJWT(user.ID, user.Role)

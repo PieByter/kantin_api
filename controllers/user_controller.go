@@ -23,7 +23,10 @@ func GetUsers(c *gin.Context) {
 	for rows.Next() {
 		var u models.User
 		err := rows.Scan(
-			&u.ID, &u.Nama, &u.NIK, &u.Email, &u.Password, &u.NomorTelepon, &u.Alamat, &u.GambarProfil, &u.TanggalLahir, &u.TanggalBergabung, &u.JabatanID, &u.BagianID, &u.PenempatanID, &u.Keterangan, &u.Role, &u.JumlahKuponTersedia, &u.JumlahKuponTerpakai, &u.JumlahKuponDibatalkan, &u.CreatedAt, &u.UpdatedAt,
+			&u.ID, &u.Nama, &u.NIK, &u.Email, &u.Password, &u.NomorTelepon, &u.Alamat, &u.GambarProfil,
+			&u.TanggalLahir, &u.TanggalBergabung, &u.JabatanID, &u.BagianID, &u.PenempatanID, &u.Keterangan,
+			&u.Role, &u.JumlahKuponTersedia, &u.JumlahKuponTerpakai, &u.JumlahKuponDibatalkan,
+			&u.CreatedAt, &u.UpdatedAt,
 		)
 		if err != nil {
 			continue

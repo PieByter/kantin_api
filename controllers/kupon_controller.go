@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	"kantin_api/config"
 	"kantin_api/models"
 	"net/http"
@@ -29,8 +30,8 @@ func CreateKupon(c *gin.Context) {
 	}
 	id, _ := res.LastInsertId()
 	req.ID = int(id)
-	req.CreatedAt = now
-	req.UpdatedAt = now
+	req.CreatedAt = sql.NullTime{Time: now, Valid: true}
+	req.UpdatedAt = sql.NullTime{Time: now, Valid: true}
 	c.JSON(http.StatusOK, req)
 }
 
