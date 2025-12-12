@@ -60,7 +60,7 @@ func AuthMiddleware() gin.HandlerFunc {
 func AdminMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		role, _ := c.Get("role")
-		if role != "admin" {
+		if role != "admin" && role != "superadmin" {
 			c.JSON(http.StatusForbidden, gin.H{"error": "Only admin can access this"})
 			c.Abort()
 			return
